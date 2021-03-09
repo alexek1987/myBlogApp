@@ -80,3 +80,45 @@ export async function fetchBlogById(req, res) {
     res.status(500).json();
   }
 }
+
+export async function updateBlog(req, res) {
+  try {
+    // recieve blog data from UI
+    const { blogTitle, blogImage, blogMessage } = req.body;
+    const { id } = req.params;
+
+    // find the blog we want to update
+    let foundBlog = await Blog.findOne({ _id: id });
+    foundBlog.title = blogTitle;
+    foundBlog.description = blogMessage;
+    // above we updated title and descrip, without saving to db
+
+    // here we delete the image
+    await Image.deleteOne({ _id: foundBlog.image });
+
+    //  create new image
+    const newImage = new Image({
+      name: blogImage.name,
+      type: blogImage.type,
+      size: blogImage.size,
+      base64: blogImage.base64,
+    });
+    // save the new image
+    await newImage.save();
+
+    foundBlog.image = newImage._id;
+    await foundBlog.save();
+
+    foundBlog = await Blog.populate(foundBlog, {
+      path: "image",
+    });
+
+    res.status(200).json({
+      message: "Blog updated!",
+      blog: foundBlog,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json();
+  }
+}

@@ -4,14 +4,17 @@ import {
   deleteBlog,
   fetchBlogById,
   fetchAllBlogs,
+  updateBlog,
 } from "../controllers/blogController.js";
 
 const router = express.Router();
 
-router.get("/blog", fetchAllBlogs);
-router.post("/blog", createNewBlog);
+router.get("/", fetchAllBlogs);
+router.post("/", createNewBlog);
 
-router.get("/blog/:id", fetchBlogById);
-router.delete("/blog/:id", deleteBlog);
+router.get("/:id", fetchBlogById);
+router.delete("/:id", deleteBlog);
+
+router.patch("/:id", updateBlog);
 
 export default router;

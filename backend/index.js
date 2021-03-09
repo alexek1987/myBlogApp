@@ -46,7 +46,7 @@ app.get("/", (req, res, next) =>
   res.status(200).json({ message: "Welcome to the blog" })
 );
 
-app.use("/", blogRoutes);
+app.use("/blog", blogRoutes);
 
 // SERVER STARTS LISTENING
 const PORT = process.env.PORT || 8081;
